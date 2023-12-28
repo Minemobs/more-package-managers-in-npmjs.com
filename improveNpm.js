@@ -61,6 +61,22 @@ const createPnpmNode = (originalNode) => {
   return newNode;
 };
 
+const createBunNode = (originalNode) => {
+  const newNode = createSiblingNode(originalNode);
+  if (!newNode) return;
+
+  const textNode = newNode.getElementsByTagName("code")[0];
+  if (!textNode) return;
+
+  textNode.innerText = textNode.innerText
+    .replace("npm", "bun")
+    .replace(" i ", isDevDependency ? " add -d " : " add ");
+
+  addCopyOnClick(newNode);
+
+  return newNode;
+};
+
 const replaceNpmNode = (originalNode) => {
   const newNode = createSiblingNode(originalNode);
   if (!newNode) return;
@@ -90,7 +106,8 @@ const recreateNode = (originalNode) => {
     textNode.innerText = textNode.innerText
       .replace("npm i ", "npm i --save-dev ")
       .replace("yarn add ", "yarn add --dev ")
-      .replace("pnpm add ", "pnpm add -D ");
+      .replace("pnpm add ", "pnpm add -D ")
+      .replace("bun add ", "bun add -d ");
   } else {
     textNode.innerText = textNode.innerText
       .replaceAll(" --save-dev", "")
@@ -139,6 +156,7 @@ setTimeout(() => {
     buttonNodes = [
       createYarnNode(npmNode),
       createPnpmNode(npmNode),
+      createBunNode(npmNode),
       replaceNpmNode(npmNode),
     ];
 
